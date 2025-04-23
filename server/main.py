@@ -10,8 +10,8 @@ from starlette.responses import JSONResponse,StreamingResponse
 from starlette.staticfiles import StaticFiles
 
 from server.const import verify_token
-from urls import router
-
+from server.urls import router
+import os
 
 class CustomMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -36,7 +36,8 @@ middlewares = [
 fast_app = FastAPI(middleware=middlewares)
 fast_app.include_router(router, prefix='/api')
 
-fast_app.mount("/static", StaticFiles(directory="static"), name="static")
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+fast_app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 if __name__ == '__main__':
     port = 7878
