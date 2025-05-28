@@ -1,20 +1,34 @@
+import os
 import datetime
 import json
 
 import requests
 from jose.constants import ALGORITHMS
 from jose import jwt
+from dotenv import load_dotenv
 
 from server.conf import session
 from server.models import User
 
+# 加载环境变量
+load_dotenv()
+
 
 class Const:
-    uri = 'mysql+aiomysql://root:abc123@localhost/dashboard'
-    LOGIN_DELTA = datetime.timedelta(hours=30)
+    # 从环境变量获取数据库配置
+    DB_USER = os.getenv('DB_USER', 'root')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', 'abc123')
+    DB_HOST = os.getenv('DB_HOST', 'localhost')
+    DB_PORT = os.getenv('DB_PORT', '3306')
+    DB_NAME = os.getenv('DB_NAME', 'dashboard')
+    
+    uri = f'mysql+aiomysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    
+    # JWT配置
+    LOGIN_DELTA = datetime.timedelta(hours=int(os.getenv('JWT_EXPIRE_HOURS', '30')))
     HEADER_PREFIX = 'Bearer '
-    ALGORITHM = ALGORITHMS.HS256
-    SECRET_KEY = 'django-insecure-l%mqno@^^-3+k-@7hh$_98r4nwe*qhv9!0bd6n)h(#vv=date2'
+    ALGORITHM = os.getenv('JWT_ALGORITHM', ALGORITHMS.HS256)
+    SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'django-insecure-l%mqno@^^-3+k-@7hh$_98r4nwe*qhv9!0bd6n)h(#vv=date2')
 
     cache = {}
 
@@ -78,7 +92,7 @@ class OpenDigger:
     def __init__(self):
         self.url = 'https://api.github.com/users/{username}/repos?per_page=100&page=1'
         self.headers = {
-            'Authorization': 'Bearer ',
+            'Authorization': f'Bearer {os.getenv("GITHUB_TOKEN", "")}'
         }
 
     def get_user_repos(self, username, platform='github'):

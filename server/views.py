@@ -20,9 +20,12 @@ from server.models import User, ProjData, DevUserData, UserDevUserMap, UserProjM
 from server.utils import make_pwd, check_pwd
 
 
+UsernameType = constr(min_length=3, max_length=12, strip_whitespace=True)
+PasswordType = constr(min_length=3, max_length=12, strip_whitespace=True)
+
 class UserModel(BaseModel):
-    username: constr(min_length=3, max_length=12, strip_whitespace=True) = ''
-    password: constr(min_length=3, max_length=12, strip_whitespace=True) = ''
+    username: UsernameType = ''
+    password: PasswordType = ''
     password1: str = ''
     roleName: str = ''
     operateArr: List[str] = []
@@ -558,15 +561,21 @@ async def addUser(userP: UserModel, request: Request):
 
 async def updateUser(userP: UserModel, request: Request):
     async with asyncSession() as db:
-        user = (
-            await db.execute(select(User).filter(User.username == userP.User,
-                                                 User.userId != userP.pk))).scalar()
-        user = (await db.execute(select(User).filter(User.userId == userP.pk))).scalar()
-        if user:
+        # 检查用户名是否已存在（排除自己）
+        exist_user = (
+            await db.execute(
+                select(User).filter(User.username == userP.username, User.userId != userP.pk)
+            )
+        ).scalar()
+        if exist_user:
             return bad_res('用户名已存在')
-        user.username = userP.roleName
-        user.roleId = userP.roleId
-
+        # 查找要更新的用户
+        user = (await db.execute(select(User).filter(User.userId == userP.pk))).scalar()
+        if not user:
+            return bad_res('用户不存在')
+        user.username = userP.username
+        if hasattr(userP, "roleId"):
+            user.roleId = userP.roleId
         await db.commit()
     return success_res(msg='操作成功')
 

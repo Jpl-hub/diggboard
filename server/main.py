@@ -15,6 +15,9 @@ import os
 
 class CustomMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        # 排除 docs 和 redoc 路径
+        if request.url.path in ['/docs', '/redoc', '/openapi.json']:
+            return await call_next(request)
         if request.url.path.split('/')[-1][0].islower() and 'static' not in request.url.path:
             token = request.headers.get('token')
             user = verify_token(token)
