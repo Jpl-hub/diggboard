@@ -9,7 +9,8 @@ export const get_openId_code = (ascope) => {
     // && !import.meta.env.DEV
     if (userAgent.includes('micromessenger')) {
         const redirect_uri = encodeURIComponent(window.location.href)
-        window.location.href = `https://jjj.hubeixiyao.cn?redirect_uri=${redirect_uri}&appId=${store.appId}&ascope=${ascope}`
+        const redirectUrl = import.meta.env.VITE_REDIRECT_URL || 'https://jjj.hubeixiyao.cn'
+        window.location.href = `${redirectUrl}?redirect_uri=${redirect_uri}&appId=${store.appId}&ascope=${ascope}`
         return false
     }
 }
@@ -60,4 +61,13 @@ export const formatterDate = (date, type) => {
 
 export const onOversize = (file) => {
     const size = (file.file.size / 1024 / 1024).toFixed(1)
+}
+
+export const toLogin = (ascope = 'snsapi_base') => {
+    const store = useStore()
+    if (ascope === 'snsapi_base' && store.get_token()) return
+
+    const redirect_uri = window.location.href
+    const redirectUrl = import.meta.env.VITE_REDIRECT_URL || 'https://jjj.hubeixiyao.cn'
+    window.location.href = `${redirectUrl}?redirect_uri=${redirect_uri}&appId=${store.appId}&ascope=${ascope}`
 }

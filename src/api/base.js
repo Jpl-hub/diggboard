@@ -3,7 +3,9 @@ import {useStore} from "@/stores/app"
 import {ElMessage} from "element-plus";
 import router from "@/router";
 
-export const upLoadUrl = import.meta.env.DEV ? 'http://127.0.0.1:7777/api/Upload' : 'https://hubeixiyao.cn/vote/user/UploadToOss'
+export const upLoadUrl = import.meta.env.DEV 
+  ? import.meta.env.VITE_UPLOAD_URL_DEV || 'http://127.0.0.1:7777/api/Upload' 
+  : import.meta.env.VITE_UPLOAD_URL_PROD || 'https://hubeixiyao.cn/vote/user/UploadToOss'
 
 export const maxImgSize = {text: '5M', size: 1024 * 1024 * 5}
 const instance = axios.create({
