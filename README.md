@@ -127,4 +127,4 @@ dash_board/
 
 
 如有问题请及时沟通！架构链接
-[Deepwiki](https://deepwiki.com/Jpl-hub/diggboard) 
+[Deepwiki](https://deepwiki.com/Jpl-hub/diggboard) 您的任何感兴趣的开源项目也可以用[Deepwiki](https://deepwiki.com) 
