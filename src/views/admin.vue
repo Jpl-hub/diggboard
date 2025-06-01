@@ -38,6 +38,15 @@ const get_userList = async () => {
 const add_user = async () => {
   userRef.value.validate(async (v) => {
     if (v) {
+      // 确保 roleId 是数字类型或 null
+      if (userForm.value.roleId === '' || userForm.value.roleId === undefined) {
+        userForm.value.roleId = null;
+      } else {
+        userForm.value.roleId = Number(userForm.value.roleId);
+      }
+      
+      console.log('添加用户数据:', userForm.value); // 调试信息
+      
       const res = await addUser(userForm.value)
       if (res.data.code === 0) {
         await get_userList()
@@ -45,11 +54,19 @@ const add_user = async () => {
       }
     }
   })
-
 }
 const edit_user = async () => {
   userRef.value.validate(async (v) => {
     if (v) {
+      // 确保 roleId 是数字类型或 null
+      if (userForm.value.roleId === '' || userForm.value.roleId === undefined) {
+        userForm.value.roleId = null;
+      } else {
+        userForm.value.roleId = Number(userForm.value.roleId);
+      }
+      
+      console.log('发送的用户数据:', userForm.value); // 调试信息
+      
       const res = await updateUser(userForm.value)
       if (res.data.code === 0) {
         await get_userList()
@@ -57,7 +74,6 @@ const edit_user = async () => {
       }
     }
   })
-
 }
 const delete_user = (row) => {
   ElMessageBox.confirm('确认删除?', {
@@ -234,9 +250,8 @@ onMounted(() => {
         </el-form-item>
         <el-form-item v-if="!userForm.pk" label="密码" prop="password">
           <el-input clearable type="password" show-password v-model="userForm.password"></el-input>
-        </el-form-item>
-        <el-form-item label="选择角色">
-          <el-select v-model="userForm.roleId">
+        </el-form-item>        <el-form-item label="选择角色">
+          <el-select v-model="userForm.roleId" clearable placeholder="请选择角色">
             <el-option v-for="rr in state.roleData"
                        :label="rr.roleName"
                        :value="rr.pk"
