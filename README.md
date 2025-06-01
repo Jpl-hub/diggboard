@@ -126,4 +126,6 @@ dash_board/
    打开浏览器访问前端地址 [http://localhost:7777](http://localhost:7777) 即可使用。
 
 
-如有问题请及时沟通！
+如有问题请及时沟通！架构链接
+[Deepwiki](https://deepwiki.com/Jpl-hub/diggboard) 您的任何感兴趣的开源项目也可以用[Deepwiki](https://deepwiki.com) 
+
