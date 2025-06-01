@@ -30,6 +30,7 @@ class UserModel(BaseModel):
     roleName: str = ''
     operateArr: List[str] = []
     pk: int = None
+    roleId: int = None
 
 
 async def Login(userP: UserModel):
@@ -552,14 +553,25 @@ async def addUser(userP: UserModel, request: Request):
         user = (await db.execute(select(User).filter_by(username=userP.username))).scalar()
         if user:
             return bad_res('用户名已存在')
-        user = User(username=userP.username,
-                    password=make_pwd(userP.password), )
+        
+        # 创建新用户，包含角色设置
+        roleId = None
+        if userP.roleId is not None and userP.roleId != '':
+            roleId = int(userP.roleId)
+            
+        user = User(
+            username=userP.username,
+            password=make_pwd(userP.password),
+            roleId=roleId
+        )
         db.add(user)
         await db.commit()
     return success_res(msg='操作成功')
 
 
 async def updateUser(userP: UserModel, request: Request):
+    print(f"接收到的用户更新数据: {userP.dict()}")  # 调试信息
+    
     async with asyncSession() as db:
         # 检查用户名是否已存在（排除自己）
         exist_user = (
@@ -573,9 +585,22 @@ async def updateUser(userP: UserModel, request: Request):
         user = (await db.execute(select(User).filter(User.userId == userP.pk))).scalar()
         if not user:
             return bad_res('用户不存在')
+        
+        print(f"更新前用户信息: userId={user.userId}, username={user.username}, roleId={user.roleId}")
+        
+        # 更新用户名
         user.username = userP.username
-        if hasattr(userP, "roleId"):
-            user.roleId = userP.roleId
+        
+        # 更新角色ID - 修复逻辑
+        if userP.roleId is not None and userP.roleId != '':
+            user.roleId = int(userP.roleId)
+            print(f"设置角色ID为: {user.roleId}")
+        elif userP.roleId == '' or userP.roleId == 0:
+            user.roleId = None
+            print("清空角色ID")
+            
+        print(f"更新后用户信息: userId={user.userId}, username={user.username}, roleId={user.roleId}")
+            
         await db.commit()
     return success_res(msg='操作成功')
 
