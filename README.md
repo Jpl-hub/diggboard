@@ -1,6 +1,6 @@
-# Dashboard 项目
+# 开源生态数据分析可视化平台项目
 
-这是一个前后端分离的数据看板项目，前端使用 Vue 3 + Vite，后端使用 Python (Flask/FastAPI)。
+这是一个前后端分离的开源生态数据分析可视化平台，前端使用 Vue 3 + Vite，后端使用 Python (FastAPI)。
 
 ## 环境配置
 
@@ -126,6 +126,6 @@ dash_board/
    打开浏览器访问前端地址 [http://localhost:7777](http://localhost:7777) 即可使用。
 
 
-如有问题请及时沟通！架构链接
-[Deepwiki](https://deepwiki.com/Jpl-hub/diggboard) 您的任何感兴趣的开源项目也可以用[Deepwiki](https://deepwiki.com) 
+如有问题请及时沟通！
+架构链接：[Deepwiki](https://deepwiki.com/Jpl-hub/diggboard) 您的任何感兴趣的开源项目也可以用[Deepwiki](https://deepwiki.com) 
 
