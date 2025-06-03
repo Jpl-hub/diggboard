@@ -89,6 +89,40 @@ export const deleteUser = async (data) => {
     return await instance.get('/deleteUser', {params: data})
 }
 
+// 项目管理相关接口
+export const getProjectList = async (data) => {
+    return await instance.get('/getProjectList', {params: data})
+}
+
+export const addProject = async (data) => {
+    return await instance.post('/addProject', data)
+}
+
+export const updateProject = async (data) => {
+    return await instance.post('/updateProject', data)
+}
+
+export const deleteProject = async (data) => {
+    return await instance.get('/deleteProject', {params: data})
+}
+
+// 开发者管理相关接口
+export const getDevUserList = async (data) => {
+    return await instance.get('/getDevUserList', {params: data})
+}
+
+export const addDevUser = async (data) => {
+    return await instance.post('/addDevUser', data)
+}
+
+export const updateDevUser = async (data) => {
+    return await instance.post('/updateDevUser', data)
+}
+
+export const deleteDevUser = async (data) => {
+    return await instance.get('/deleteDevUser', {params: data})
+}
+
 
 
 

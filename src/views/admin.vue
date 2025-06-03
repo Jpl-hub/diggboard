@@ -7,7 +7,17 @@ import {
   deleteUser,
   getRoleList,
   getUserList,
-  getOperateOps, updateRole, updateUser, getUserInfo
+  getOperateOps, updateRole, updateUser, getUserInfo,
+  // 项目管理
+  getProjectList,
+  addProject,
+  updateProject,
+  deleteProject,
+  // 开发者管理
+  getDevUserList,
+  addDevUser,
+  updateDevUser,
+  deleteDevUser
 } from "@/api/dash";
 import {useStore} from "@/stores/app";
 import _ from "lodash"
@@ -26,8 +36,31 @@ const roleForm = ref({
   roleName: '',
   operateArr: [],
 })
+
+const projectForm = ref({
+  name: '',
+  platform: '',
+  openRank: 0,
+  activity: 0,
+  stars: 0,
+  attention: 0,
+  technical_fork: 0,
+})
+
+const devUserForm = ref({
+  name: '',
+  platform: '',
+  openRank: 0,
+  activity: 0,
+  repos: 0,
+  stars: 0,
+  technical_fork: 0,
+})
+
 const userRef = ref()
 const roleRef = ref()
+const projectRef = ref()
+const devUserRef = ref()
 
 const get_userList = async () => {
   const res = await getUserList()
@@ -158,6 +191,123 @@ const get_operate_ops = async () => {
   state.operateOps = res.data
 }
 
+// 项目管理函数
+const get_projectList = async () => {
+  const res = await getProjectList()
+  state.projectData = res.data.data.data
+  state.projectColumns = res.data.data.columns
+  state.projectTotal = res.data.data.total
+}
+
+const add_project = async () => {
+  projectRef.value.validate(async (v) => {
+    if (v) {
+      const res = await addProject(projectForm.value)
+      if (res.data.code === 0) {
+        await get_projectList()
+        state.projectDialogShow = false
+      }
+    }
+  })
+}
+
+const edit_project = async () => {
+  projectRef.value.validate(async (v) => {
+    if (v) {
+      const res = await updateProject(projectForm.value)
+      if (res.data.code === 0) {
+        await get_projectList()
+        state.projectDialogShow = false
+      }
+    }
+  })
+}
+
+const delete_project = (row) => {
+  ElMessageBox.confirm('确认删除?', {
+    closeOnClickModal: true,
+    callback: async (action) => {
+      if (action === 'confirm') {
+        const res = await deleteProject({pk: row.pk})
+        if (res.data.code === 0) {
+          await get_projectList()
+        }
+      }
+    },
+  })
+}
+
+const openProject = () => {
+  state.projectDialogShow = true
+  projectForm.value = {
+    name: '',
+    platform: 'github',
+    openRank: 0,
+    activity: 0,
+    stars: 0,
+    attention: 0,
+    technical_fork: 0,
+  }
+}
+
+// 开发者管理函数
+const get_devUserList = async () => {
+  const res = await getDevUserList()
+  state.devUserData = res.data.data.data
+  state.devUserColumns = res.data.data.columns
+  state.devUserTotal = res.data.data.total
+}
+
+const add_devUser = async () => {
+  devUserRef.value.validate(async (v) => {
+    if (v) {
+      const res = await addDevUser(devUserForm.value)
+      if (res.data.code === 0) {
+        await get_devUserList()
+        state.devUserDialogShow = false
+      }
+    }
+  })
+}
+
+const edit_devUser = async () => {
+  devUserRef.value.validate(async (v) => {
+    if (v) {
+      const res = await updateDevUser(devUserForm.value)
+      if (res.data.code === 0) {
+        await get_devUserList()
+        state.devUserDialogShow = false
+      }
+    }
+  })
+}
+
+const delete_devUser = (row) => {
+  ElMessageBox.confirm('确认删除?', {
+    closeOnClickModal: true,
+    callback: async (action) => {
+      if (action === 'confirm') {
+        const res = await deleteDevUser({pk: row.pk})
+        if (res.data.code === 0) {
+          await get_devUserList()
+        }
+      }
+    },
+  })
+}
+
+const openDevUser = () => {
+  state.devUserDialogShow = true
+  devUserForm.value = {
+    name: '',
+    platform: 'github',
+    openRank: 0,
+    activity: 0,
+    repos: 0,
+    stars: 0,
+    technical_fork: 0,
+  }
+}
 
 const state = reactive({
   active: '1',
@@ -167,14 +317,24 @@ const state = reactive({
   roleData: [],
   roleColumns: [],
   roleTotal: 0,
+  projectData: [],
+  projectColumns: [],
+  projectTotal: 0,
+  devUserData: [],
+  devUserColumns: [],
+  devUserTotal: 0,
   operateOps: [],
   userDialogShow: false,
   roleDialogShow: false,
+  projectDialogShow: false,
+  devUserDialogShow: false,
   type: ''
 })
 onMounted(() => {
   get_roleList()
   get_userList()
+  get_projectList()
+  get_devUserList()
   get_operate_ops()
 })
 </script>
@@ -223,6 +383,43 @@ onMounted(() => {
                          @click="roleForm = _.cloneDeep(scope.row);state.roleDialogShow=true;console.log(scope.row)">编辑
               </el-button>
               <el-button type="danger" @click="delete_role(scope.row)">删除</el-button>
+            </el-space>
+            <div v-else>{{ scope.row[cc.key] }}</div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-tab-pane>
+    
+    <!-- 项目管理 -->
+    <el-tab-pane v-if="userInfo.operateArr.includes('admin')" name="3" label="项目管理">
+      <el-space>
+        <el-button @click="openProject" type="primary">添加项目</el-button>
+      </el-space>
+      <el-table :data="state.projectData">
+        <el-table-column v-for="cc in state.projectColumns" :label="cc.label">
+          <template #default="scope">
+            <el-space v-if="cc.key==='operate'">
+              <el-button type="primary" @click="projectForm = _.cloneDeep(scope.row);state.projectDialogShow=true">编辑</el-button>
+              <el-button type="danger" @click="delete_project(scope.row)">删除</el-button>
+            </el-space>
+            <div v-else>{{ scope.row[cc.key] }}</div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-tab-pane>
+    
+    <!-- 开发者管理 -->
+    <el-tab-pane v-if="userInfo.operateArr.includes('admin')" name="4" label="开发者管理">
+      <el-space>
+        <el-button @click="openDevUser" type="primary">添加开发者</el-button>
+      </el-space>
+      <el-table :data="state.devUserData">
+        <el-table-column v-for="cc in state.devUserColumns" :label="cc.label">
+          <template #default="scope">
+            <el-avatar v-if="cc.key==='avatar_url'" :src="scope.row[cc.key]"></el-avatar>
+            <el-space v-else-if="cc.key==='operate'">
+              <el-button type="primary" @click="devUserForm = _.cloneDeep(scope.row);state.devUserDialogShow=true">编辑</el-button>
+              <el-button type="danger" @click="delete_devUser(scope.row)">删除</el-button>
             </el-space>
             <div v-else>{{ scope.row[cc.key] }}</div>
           </template>
@@ -292,6 +489,92 @@ onMounted(() => {
       </el-row>
     </div>
 
+  </el-dialog>
+  
+  <!-- 项目管理对话框 -->
+  <el-dialog v-model="state.projectDialogShow" width="600">
+    <div style="display: flex; flex-direction: column; justify-content: space-between;min-height: 400px;">
+      <el-form :model="projectForm"
+               label-width="100px"
+               style="margin: 20px"
+               ref="projectRef"
+               :rules="{
+                 name:[{required:true, trigger: 'blur', message:'输入项目名称'}],
+                 platform:[{required:true, trigger: 'blur', message:'选择平台'}]
+               }"
+      >
+        <el-form-item label="项目名称" prop="name">
+          <el-input clearable v-model="projectForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="平台" prop="platform">
+          <el-select v-model="projectForm.platform">
+            <el-option label="GitHub" value="github"></el-option>
+            <el-option label="Gitee" value="gitee"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="OpenRank">
+          <el-input-number v-model="projectForm.openRank" :min="0" :precision="2"></el-input-number>
+        </el-form-item>
+        <el-form-item label="活跃度">
+          <el-input-number v-model="projectForm.activity" :min="0" :precision="2"></el-input-number>
+        </el-form-item>
+        <el-form-item label="Stars">
+          <el-input-number v-model="projectForm.stars" :min="0"></el-input-number>
+        </el-form-item>
+        <el-form-item label="关注度">
+          <el-input-number v-model="projectForm.attention" :min="0"></el-input-number>
+        </el-form-item>
+        <el-form-item label="Fork数">
+          <el-input-number v-model="projectForm.technical_fork" :min="0"></el-input-number>
+        </el-form-item>
+      </el-form>
+      <el-row justify="center" style="margin-top: 50px">
+        <el-button type="primary" @click="projectForm.pk ? edit_project() : add_project()">保存</el-button>
+      </el-row>
+    </div>
+  </el-dialog>
+  
+  <!-- 开发者管理对话框 -->
+  <el-dialog v-model="state.devUserDialogShow" width="600">
+    <div style="display: flex; flex-direction: column; justify-content: space-between;min-height: 400px;">
+      <el-form :model="devUserForm"
+               label-width="100px"
+               style="margin: 20px"
+               ref="devUserRef"
+               :rules="{
+                 name:[{required:true, trigger: 'blur', message:'输入开发者名称'}],
+                 platform:[{required:true, trigger: 'blur', message:'选择平台'}]
+               }"
+      >
+        <el-form-item label="开发者名称" prop="name">
+          <el-input clearable v-model="devUserForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="平台" prop="platform">
+          <el-select v-model="devUserForm.platform">
+            <el-option label="GitHub" value="github"></el-option>
+            <el-option label="Gitee" value="gitee"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="OpenRank">
+          <el-input-number v-model="devUserForm.openRank" :min="0" :precision="2"></el-input-number>
+        </el-form-item>
+        <el-form-item label="活跃度">
+          <el-input-number v-model="devUserForm.activity" :min="0" :precision="2"></el-input-number>
+        </el-form-item>
+        <el-form-item label="仓库数">
+          <el-input-number v-model="devUserForm.repos" :min="0"></el-input-number>
+        </el-form-item>
+        <el-form-item label="Stars总数">
+          <el-input-number v-model="devUserForm.stars" :min="0"></el-input-number>
+        </el-form-item>
+        <el-form-item label="被Fork数">
+          <el-input-number v-model="devUserForm.technical_fork" :min="0"></el-input-number>
+        </el-form-item>
+      </el-form>
+      <el-row justify="center" style="margin-top: 50px">
+        <el-button type="primary" @click="devUserForm.pk ? edit_devUser() : add_devUser()">保存</el-button>
+      </el-row>
+    </div>
   </el-dialog>
 </template>
 

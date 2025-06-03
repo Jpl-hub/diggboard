@@ -28,3 +28,15 @@ router.add_api_route('/addUser', views.addUser, methods=['post'])
 router.add_api_route('/updateRole', views.updateRole, methods=['post'])
 router.add_api_route('/updateUser', views.updateUser, methods=['post'])
 router.add_api_route('/deleteUser', views.deleteUser, methods=['get'])
+
+# 项目管理路由
+router.add_api_route('/getProjectList', views.getProjectList, methods=['get'])
+router.add_api_route('/addProject', views.addProject, methods=['post'])
+router.add_api_route('/updateProject', views.updateProject, methods=['post'])
+router.add_api_route('/deleteProject', views.deleteProject, methods=['get'])
+
+# 开发者管理路由
+router.add_api_route('/getDevUserList', views.getDevUserList, methods=['get'])
+router.add_api_route('/addDevUser', views.addDevUser, methods=['post'])
+router.add_api_route('/updateDevUser', views.updateDevUser, methods=['post'])
+router.add_api_route('/deleteDevUser', views.deleteDevUser, methods=['get'])
