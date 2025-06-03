@@ -1,0 +1,36 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "应用层（前端）" {
+  [仪表盘]
+  [大屏页]
+  [用户中心]
+  [管理后台]
+}
+
+package "业务逻辑层（后端）" {
+  [数据采集]
+  [数据分析]
+  [用户权限]
+  [API接口服务]
+}
+
+package "DAO层" {
+  [SQLAlchemy ORM]
+}
+
+database "MySQL数据库" as DB
+
+[仪表盘] -down-> [API接口服务]
+[大屏页] -down-> [API接口服务]
+[用户中心] -down-> [API接口服务]
+[管理后台] -down-> [API接口服务]
+
+[API接口服务] -down-> [SQLAlchemy ORM]
+[SQLAlchemy ORM] -down-> DB
+
+[数据采集] ..> [SQLAlchemy ORM] : 数据入库
+[数据分析] ..> [SQLAlchemy ORM] : 数据查询
+[用户权限] ..> [SQLAlchemy ORM] : 用户/权限管理
+
+@enduml

@@ -16,7 +16,7 @@ from starlette.requests import Request
 
 from server.conf import session, asyncSession
 from server.const import bad_res, create_token, success_res, Const
-from server.models import User, ProjData, DevUserData, UserDevUserMap, UserProjMap, DevUser, Role
+from server.models import User, ProjData, DevUserData, UserDevUserMap, UserProjMap, DevUser, Role, Project, url_prefix
 from server.utils import make_pwd, check_pwd
 
 
@@ -610,4 +610,186 @@ async def deleteUser(pk: int, request: Request):
         obj = (await db.execute(select(User).filter_by(userId=pk))).scalar()
         obj.flag = False
         await db.commit()
+    return success_res(msg='操作成功')
+
+
+# 项目管理相关接口
+async def getProjectList(request: Request):
+    async with asyncSession() as db:
+        queryset = select(Project)
+        dataArr = (await db.execute(queryset)).scalars().all()
+        
+        data = []
+        for i in dataArr:
+            data.append({
+                'pk': i.projectId,
+                'name': i.name,
+                'platform': i.platform,
+                'openRank': i.openRank,
+                'activity': i.activity,
+                'stars': i.stars,
+                'attention': i.attention,
+                'technical_fork': i.technical_fork,
+            })
+        total = (await db.execute(select(func.count()).select_from(Project))).scalar()
+    columns = [
+        {'label': '项目Id', 'key': 'pk'},
+        {'label': '项目名称', 'key': 'name'},
+        {'label': '平台', 'key': 'platform'},
+        {'label': 'OpenRank', 'key': 'openRank'},
+        {'label': '活跃度', 'key': 'activity'},
+        {'label': 'Stars', 'key': 'stars'},
+        {'label': '关注度', 'key': 'attention'},
+        {'label': 'Fork数', 'key': 'technical_fork'},
+        {'label': '操作', 'key': 'operate'},
+    ]
+    res = {
+        'data': data,
+        'columns': columns,
+        'total': total
+    }
+    return success_res(res)
+
+
+class ProjectModel(BaseModel):
+    name: str
+    platform: str = 'github'
+    openRank: float = 0
+    activity: float = 0
+    stars: int = 0
+    attention: int = 0
+    technical_fork: int = 0
+    pk: int = None
+
+
+async def addProject(projectP: ProjectModel, request: Request):
+    async with asyncSession() as db:
+        project = Project(
+            name=projectP.name,
+            platform=projectP.platform,
+            openRank=projectP.openRank,
+            activity=projectP.activity,
+            stars=projectP.stars,
+            attention=projectP.attention,
+            technical_fork=projectP.technical_fork
+        )
+        db.add(project)
+        await db.commit()
+    return success_res(msg='操作成功')
+
+
+async def updateProject(projectP: ProjectModel, request: Request):
+    async with asyncSession() as db:
+        project = (await db.execute(select(Project).filter(Project.projectId == projectP.pk))).scalar()
+        if not project:
+            return bad_res('项目不存在')
+        project.name = projectP.name
+        project.platform = projectP.platform
+        project.openRank = projectP.openRank
+        project.activity = projectP.activity
+        project.stars = projectP.stars
+        project.attention = projectP.attention
+        project.technical_fork = projectP.technical_fork
+        await db.commit()
+    return success_res(msg='操作成功')
+
+
+async def deleteProject(pk: int, request: Request):
+    async with asyncSession() as db:
+        obj = (await db.execute(select(Project).filter_by(projectId=pk))).scalar()
+        if obj:
+            await db.delete(obj)
+            await db.commit()
+    return success_res(msg='操作成功')
+
+
+# 开发者管理相关接口
+async def getDevUserList(request: Request):
+    async with asyncSession() as db:
+        queryset = select(DevUser)
+        dataArr = (await db.execute(queryset)).scalars().all()
+        
+        data = []
+        for i in dataArr:
+            data.append({
+                'pk': i.devUserId,
+                'name': i.name,
+                'avatar_url': url_prefix + (i.avatar_url or ''),
+                'platform': i.platform,
+                'openRank': i.openRank,
+                'activity': i.activity,
+                'repos': i.repos,
+                'stars': i.stars,
+                'technical_fork': i.technical_fork,
+            })
+        total = (await db.execute(select(func.count()).select_from(DevUser))).scalar()
+    columns = [
+        {'label': '开发者Id', 'key': 'pk'},
+        {'label': '头像', 'key': 'avatar_url'},
+        {'label': '名称', 'key': 'name'},
+        {'label': '平台', 'key': 'platform'},
+        {'label': 'OpenRank', 'key': 'openRank'},
+        {'label': '活跃度', 'key': 'activity'},
+        {'label': '仓库数', 'key': 'repos'},
+        {'label': 'Stars总数', 'key': 'stars'},
+        {'label': '被Fork数', 'key': 'technical_fork'},
+        {'label': '操作', 'key': 'operate'},
+    ]
+    res = {
+        'data': data,
+        'columns': columns,
+        'total': total
+    }
+    return success_res(res)
+
+
+class DevUserModel(BaseModel):
+    name: str
+    platform: str = 'github'
+    openRank: float = 0
+    activity: float = 0
+    repos: int = 0
+    stars: int = 0
+    technical_fork: int = 0
+    pk: int = None
+
+
+async def addDevUser(devUserP: DevUserModel, request: Request):
+    async with asyncSession() as db:
+        devUser = DevUser(
+            name=devUserP.name,
+            platform=devUserP.platform,
+            openRank=devUserP.openRank,
+            activity=devUserP.activity,
+            repos=devUserP.repos,
+            stars=devUserP.stars,
+            technical_fork=devUserP.technical_fork
+        )
+        db.add(devUser)
+        await db.commit()
+    return success_res(msg='操作成功')
+
+
+async def updateDevUser(devUserP: DevUserModel, request: Request):
+    async with asyncSession() as db:
+        devUser = (await db.execute(select(DevUser).filter(DevUser.devUserId == devUserP.pk))).scalar()
+        if not devUser:
+            return bad_res('开发者不存在')
+        devUser.name = devUserP.name
+        devUser.platform = devUserP.platform
+        devUser.openRank = devUserP.openRank
+        devUser.activity = devUserP.activity
+        devUser.repos = devUserP.repos
+        devUser.stars = devUserP.stars
+        devUser.technical_fork = devUserP.technical_fork
+        await db.commit()
+    return success_res(msg='操作成功')
+
+
+async def deleteDevUser(pk: int, request: Request):
+    async with asyncSession() as db:
+        obj = (await db.execute(select(DevUser).filter_by(devUserId=pk))).scalar()
+        if obj:
+            await db.delete(obj)
+            await db.commit()
     return success_res(msg='操作成功')
