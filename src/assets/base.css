@@ -1,24 +1,26 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* color palette - 现代蓝色主题 */
 :root {
   --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  --vt-c-white-soft: #f8fafc;
+  --vt-c-white-mute: #f1f5f9;
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  --vt-c-black: #0f172a;
+  --vt-c-black-soft: #1e293b;
+  --vt-c-black-mute: #334155;
 
-  --vt-c-indigo: #2c3e50;
+  --vt-c-indigo: #3b82f6;
+  --vt-c-indigo-soft: #60a5fa;
+  --vt-c-indigo-dark: #1d4ed8;
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --vt-c-divider-light-1: rgba(59, 130, 246, 0.29);
+  --vt-c-divider-light-2: rgba(59, 130, 246, 0.12);
+  --vt-c-divider-dark-1: rgba(96, 165, 250, 0.65);
+  --vt-c-divider-dark-2: rgba(96, 165, 250, 0.48);
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-light-1: var(--vt-c-indigo-dark);
+  --vt-c-text-light-2: rgba(51, 65, 85, 0.8);
   --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --vt-c-text-dark-2: rgba(248, 250, 252, 0.8);
 }
 
 /* semantic color variables for this project */

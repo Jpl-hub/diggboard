@@ -38,7 +38,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div style="position: fixed; top:100px; left: 20%;font-size: 1.5rem; font-weight: bold">DashBoard</div>
+  <div style="position: fixed; top:100px; left: 20%;font-size: 1.5rem; font-weight: bold">开源生态数据分析可视化平台</div>
   <transition name="fade-up">
     <el-card v-if="aa"
              style="position: absolute;top:200px;left:0;right:0;margin: auto;display: flex;
