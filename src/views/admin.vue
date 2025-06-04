@@ -347,17 +347,16 @@ onMounted(() => {
                    @click="openUser"
                    type="primary">添加用户
         </el-button>
-      </el-space>
-      <el-table :data="state.userData">
-        <el-table-column v-for="cc in state.userColumns" :label="cc.label">
+      </el-space>      <el-table :data="state.userData">
+        <el-table-column v-for="cc in state.userColumns" :label="cc.label" :width="cc.key === 'operate' ? 200 : undefined">
           <template #default="scope">
             <el-avatar v-if="cc.key==='avatar_url'" :src="scope.row[cc.key]"></el-avatar>
-            <el-space v-else-if="cc.key==='operate'">
-              <el-button type="primary" v-if="userInfo.operateArr.includes('updateUser')"
+            <el-space v-else-if="cc.key==='operate'" :size="8">
+              <el-button type="primary" size="small" v-if="userInfo.operateArr.includes('updateUser')"
                          @click="userForm = _.cloneDeep(scope.row);state.userDialogShow=true">编辑
               </el-button>
               <div v-if="userInfo.operateArr.includes('deleteUser')">
-                <el-button type="danger" v-show="scope.row.pk!==userInfo.userId"
+                <el-button type="danger" size="small" v-show="scope.row.pk!==userInfo.userId"
                            @click="delete_user(scope.row)">删除
                 </el-button>
               </div>
@@ -373,16 +372,15 @@ onMounted(() => {
                    @click="openRole"
                    type="primary">添加角色
         </el-button>
-      </el-space>
-      <el-table :data="state.roleData">
-        <el-table-column v-for="cc in state.roleColumns" :label="cc.label">
+      </el-space>      <el-table :data="state.roleData">
+        <el-table-column v-for="cc in state.roleColumns" :label="cc.label" :width="cc.key === 'operate' ? 200 : undefined">
           <template #default="scope">
             <el-avatar v-if="cc.key==='avatar_url'" :src="scope.row[cc.key]"></el-avatar>
-            <el-space v-else-if="cc.key==='operate'">
-              <el-button type="primary"
+            <el-space v-else-if="cc.key==='operate'" :size="8">
+              <el-button type="primary" size="small"
                          @click="roleForm = _.cloneDeep(scope.row);state.roleDialogShow=true;console.log(scope.row)">编辑
               </el-button>
-              <el-button type="danger" @click="delete_role(scope.row)">删除</el-button>
+              <el-button type="danger" size="small" @click="delete_role(scope.row)">删除</el-button>
             </el-space>
             <div v-else>{{ scope.row[cc.key] }}</div>
           </template>
@@ -394,13 +392,12 @@ onMounted(() => {
     <el-tab-pane v-if="userInfo.operateArr.includes('admin')" name="3" label="项目管理">
       <el-space>
         <el-button @click="openProject" type="primary">添加项目</el-button>
-      </el-space>
-      <el-table :data="state.projectData">
-        <el-table-column v-for="cc in state.projectColumns" :label="cc.label">
+      </el-space>      <el-table :data="state.projectData">
+        <el-table-column v-for="cc in state.projectColumns" :label="cc.label" :width="cc.key === 'operate' ? 200 : undefined">
           <template #default="scope">
-            <el-space v-if="cc.key==='operate'">
-              <el-button type="primary" @click="projectForm = _.cloneDeep(scope.row);state.projectDialogShow=true">编辑</el-button>
-              <el-button type="danger" @click="delete_project(scope.row)">删除</el-button>
+            <el-space v-if="cc.key==='operate'" :size="8">
+              <el-button type="primary" size="small" @click="projectForm = _.cloneDeep(scope.row);state.projectDialogShow=true">编辑</el-button>
+              <el-button type="danger" size="small" @click="delete_project(scope.row)">删除</el-button>
             </el-space>
             <div v-else>{{ scope.row[cc.key] }}</div>
           </template>
@@ -412,14 +409,13 @@ onMounted(() => {
     <el-tab-pane v-if="userInfo.operateArr.includes('admin')" name="4" label="开发者管理">
       <el-space>
         <el-button @click="openDevUser" type="primary">添加开发者</el-button>
-      </el-space>
-      <el-table :data="state.devUserData">
-        <el-table-column v-for="cc in state.devUserColumns" :label="cc.label">
+      </el-space>      <el-table :data="state.devUserData">
+        <el-table-column v-for="cc in state.devUserColumns" :label="cc.label" :width="cc.key === 'operate' ? 200 : undefined">
           <template #default="scope">
             <el-avatar v-if="cc.key==='avatar_url'" :src="scope.row[cc.key]"></el-avatar>
-            <el-space v-else-if="cc.key==='operate'">
-              <el-button type="primary" @click="devUserForm = _.cloneDeep(scope.row);state.devUserDialogShow=true">编辑</el-button>
-              <el-button type="danger" @click="delete_devUser(scope.row)">删除</el-button>
+            <el-space v-else-if="cc.key==='operate'" :size="8">
+              <el-button type="primary" size="small" @click="devUserForm = _.cloneDeep(scope.row);state.devUserDialogShow=true">编辑</el-button>
+              <el-button type="danger" size="small" @click="delete_devUser(scope.row)">删除</el-button>
             </el-space>
             <div v-else>{{ scope.row[cc.key] }}</div>
           </template>
@@ -579,5 +575,156 @@ onMounted(() => {
 </template>
 
 <style scoped lang="less">
+/* 管理页面整体样式 */
+.el-tabs {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
 
+/* 标签页头部样式 */
+:deep(.el-tabs__header) {
+  margin-bottom: 20px;
+}
+
+:deep(.el-tabs__item) {
+  font-size: 16px;
+  font-weight: 500;
+  color: #64748b;
+  padding: 0 30px;
+}
+
+:deep(.el-tabs__item.is-active) {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+:deep(.el-tabs__active-bar) {
+  background-color: #3b82f6;
+  height: 3px;
+}
+
+/* 表格样式优化 */
+:deep(.el-table) {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+:deep(.el-table__header-wrapper) {
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+}
+
+:deep(.el-table th) {
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+  color: #475569;
+}
+
+:deep(.el-table td) {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+:deep(.el-table__row):hover {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* 操作按钮优化 */
+.el-button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.el-button--primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: none;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.el-button--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.el-button--danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: none;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.el-button--danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* 对话框样式 */
+:deep(.el-dialog) {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.2);
+}
+
+:deep(.el-dialog__header) {
+  padding: 24px 24px 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+:deep(.el-dialog__title) {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* 表单样式 */
+:deep(.el-form-item__label) {
+  font-weight: 500;
+  color: #374151;
+}
+
+:deep(.el-input__wrapper) {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+:deep(.el-input__wrapper:hover) {
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 头像样式 */
+:deep(.el-avatar) {
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 选择器样式 */
+:deep(.el-select .el-input__wrapper) {
+  border-radius: 8px;
+}
+
+:deep(.el-select-dropdown) {
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* 标签样式 */
+:deep(.el-tag) {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* 空间间距 */
+.el-space {
+  margin-bottom: 16px;
+}
 </style>

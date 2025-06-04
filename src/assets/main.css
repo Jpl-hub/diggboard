@@ -23,11 +23,41 @@
     }
 }
 
-html, body {
+html,
+body {
     margin: 0;
     height: 100%;
     width: 100%;
-    background: url("https://open-leaderboard.x-lab.info/pics/Header%20BG.png") no-repeat center center / cover;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.5) rgba(255, 255, 255, 0.1);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.7);
 }
 
 img {
@@ -37,12 +67,53 @@ img {
 
 a,
 .green {
-    color: #17ebf5;
+    color: #60a5fa;
     transition: 0.4s;
+}
+
+a:hover,
+.green:hover {
+    color: #3b82f6;
 }
 
 .el-drawer {
     border-radius: 10px 0 0 10px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* 为主要容器添加玻璃效果 */
+.el-card,
+.el-dialog__wrapper .el-dialog {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* 表格美化 */
+.el-table {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.el-table th.el-table__cell {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--vt-c-text-light-1);
+    font-weight: 600;
+}
+
+/* 按钮主题色调整 */
+.el-button--primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border: none;
+    box-shadow: 0 4px 15px 0 rgba(59, 130, 246, 0.4);
+}
+
+.el-button--primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.6);
 }
 
 
@@ -63,7 +134,3 @@ a,
 .bold {
     font-weight: 700;
 }
-
-
-
-

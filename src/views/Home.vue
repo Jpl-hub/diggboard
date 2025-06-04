@@ -34,16 +34,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <el-row justify="space-between" style="padding: 10px 10px 40px;width: 1200px;margin: auto;">
-    <el-space alignment="center" @click="router.push('dashboard')" style="font-size: 20px;cursor: pointer">
-      <img src="@/assets/img3.png" :width="60" alt="">
-      <strong>DashBoard</strong>
-    </el-space>
-
-    <el-dropdown>
-      <el-space style="cursor: pointer">
+  <el-row justify="space-between" style="padding: 10px 10px 40px;width: 1200px;margin: auto;">    <el-space alignment="center" @click="router.push('dashboard')" style="font-size: 20px;cursor: pointer" class="logo-section">
+      <img src="@/assets/dashboard-icon.svg" :width="60" alt="Dashboard Icon">
+      <strong class="logo-text">开源生态数据分析可视化平台</strong>
+    </el-space><el-dropdown>
+      <el-space style="cursor: pointer" class="user-dropdown">
         <el-avatar :src="userInfo.avatar_url" :size="32"></el-avatar>
-        <span>{{ userInfo.username }}</span>
+        <span class="username-text">{{ userInfo.username }}</span>
       </el-space>
       <template #dropdown>
         <el-dropdown-menu>
@@ -61,4 +58,41 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.logo-section {
+  transition: all 0.3s ease;
+}
+
+.logo-section:hover {
+  transform: translateY(-2px);
+}
+
+.logo-text {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.user-dropdown {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px 0 rgba(31, 38, 135, 0.2);
+  transition: all 0.3s ease;
+}
+
+.user-dropdown:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(31, 38, 135, 0.3);
+}
+
+.username-text {
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 16px;
+}
 </style>
